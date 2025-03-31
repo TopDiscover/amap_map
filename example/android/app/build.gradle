@@ -28,6 +28,8 @@ if (flutterVersionName == null) {
 android {
     namespace = "com.amap.flutter.amap_map_example"
     compileSdkVersion flutter.compileSdkVersion
+    // ndkVersion '27.0.12077973'
+    ndkVersion flutter.ndkVersion
 
     lint {
         disable 'InvalidPackage'
@@ -70,7 +72,7 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
-    ndkVersion '27.0.12077973'
+    
 }
 dependencies {
 }

@@ -8,7 +8,7 @@ import com.amap.flutter.map.utils.LogUtil;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
-import io.flutter.embedding.engine.plugins.lifecycle.FlutterLifecycleAdapter;
+import io.flutter.embedding.engine.plugins.lifecycle.HiddenLifecycleReference;
 
 /**
  * AmapFlutterMapPlugin
@@ -50,7 +50,8 @@ public class AMapFlutterMapPlugin implements
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
         LogUtil.i(CLASS_NAME, "onAttachedToActivity==>");
-        lifecycle = FlutterLifecycleAdapter.getActivityLifecycle(binding);
+        HiddenLifecycleReference reference = (HiddenLifecycleReference) binding.getLifecycle();
+        lifecycle = reference.getLifecycle();
         pluginBinding.getPlatformViewRegistry().registerViewFactory(
                 VIEW_TYPE,
                 new AMapPlatformViewFactory(
