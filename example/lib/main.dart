@@ -78,6 +78,13 @@ class _AMapDemoState extends State<AMapDemo>
                 category: DemoCategory.overlay,
                 demos: overlayDemos(),
               )),
+          AnimatedCategoryItem(
+              startDelayFraction: 0.15,
+              controller: _animationController,
+              child: CategoryListItem(
+                category: DemoCategory.location,
+                demos: locationDemos(),
+              )),
         ],
       ),
     );
@@ -103,6 +110,7 @@ enum DemoCategory {
   basic,
   interactive,
   overlay,
+  location,
   extension;
 
   String toDisplayTitle() {
@@ -113,6 +121,8 @@ enum DemoCategory {
         return '与地图交互';
       case overlay:
         return '在地图上绘制';
+      case location:
+        return '定位';
       case extension:
         return '拓展插件';
     }

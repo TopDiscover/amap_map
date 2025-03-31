@@ -3,6 +3,7 @@ package com.amap.flutter.map;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 
+import com.amap.flutter.location.AMapLocationPlugin;
 import com.amap.flutter.map.utils.LogUtil;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -20,6 +21,7 @@ public class AMapFlutterMapPlugin implements
     private static final String VIEW_TYPE = "com.amap.flutter.map";
     private Lifecycle lifecycle;
     private FlutterPluginBinding pluginBinding;
+    private AMapLocationPlugin locationPlugin;
 
     public AMapFlutterMapPlugin() {
     }
@@ -37,11 +39,18 @@ public class AMapFlutterMapPlugin implements
                         new AMapPlatformViewFactory(
                                 binding.getBinaryMessenger(),
                                 () -> lifecycle));
+        
+        // 注册定位插件
+        locationPlugin = new AMapLocationPlugin();
+        locationPlugin.onAttachedToEngine(binding);
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         LogUtil.i(CLASS_NAME, "onDetachedFromEngine==>");
+        if (locationPlugin != null) {
+            locationPlugin.onDetachedFromEngine(binding);
+        }
     }
 
 

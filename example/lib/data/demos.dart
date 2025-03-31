@@ -10,6 +10,8 @@ import 'package:amap_map_example/pages/overlays/custom_info_window.dart';
 import 'package:amap_map_example/pages/overlays/marker_config.dart';
 import 'package:flutter/material.dart';
 
+import '../pages/location/location_demo.dart';
+
 class DemoConfiguration {
   const DemoConfiguration({
     required this.buildRoute,
@@ -18,7 +20,8 @@ class DemoConfiguration {
   final WidgetBuilder buildRoute;
 }
 
-List<Demo> allDemos() => mapDemos() + interactiveDemos() + overlayDemos();
+List<Demo> allDemos() =>
+    mapDemos() + interactiveDemos() + overlayDemos() + locationDemos();
 
 List<Demo> mapDemos() {
   return <Demo>[
@@ -93,6 +96,20 @@ List<Demo> overlayDemos() {
         configurations: <DemoConfiguration>[
           DemoConfiguration(
               buildRoute: (BuildContext context) => CustomInfoWindowDemoPage())
+        ])
+  ];
+}
+
+List<Demo> locationDemos() {
+  return <Demo>[
+    Demo(
+        title: '定位',
+        category: DemoCategory.location,
+        subtitle: '定位',
+        slug: 'location',
+        configurations: <DemoConfiguration>[
+          DemoConfiguration(
+              buildRoute: (BuildContext context) => LocationDemo())
         ])
   ];
 }
