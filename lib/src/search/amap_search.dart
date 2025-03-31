@@ -12,15 +12,21 @@ class AmapSearch {
     int pageSize = 20,
   }) async {
     try {
-      final result = await _channel.invokeMethod('searchPOIByKeyword', {
+      dynamic result = await _channel.invokeMethod('searchPOIByKeyword', {
         'keyword': keyword,
         'city': city,
         'page': page,
         'pageSize': pageSize,
       });
 
-      final List<dynamic> list = result['pois'] ?? [];
-      return list.map((item) => PoiResult.fromMap(item)).toList();
+      List<PoiResult> output = [];
+      if (result is List) {
+        output = result.map((map) {
+          var itemMap = new Map<String, dynamic>.from(map);
+          return PoiResult.fromMap(itemMap);
+        }).toList();
+      }
+      return output;
     } catch (e) {
       throw Exception('搜索失败: $e');
     }

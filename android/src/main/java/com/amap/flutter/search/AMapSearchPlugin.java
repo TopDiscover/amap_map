@@ -5,12 +5,12 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.amap.api.services.auto.ListData;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
+import com.amap.api.services.help.Tip;
 import com.amap.flutter.map.utils.ConvertUtil;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -20,6 +20,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +51,11 @@ public class AMapSearchPlugin implements FlutterPlugin, MethodChannel.MethodCall
 
     private void initPrivacy() {
         try {
-            // ConvertUtil.setPrivacyStatement(context,{});
-            // AMapPrivacyStatement.updatePrivacyShow(activity, true, true);
-            // AMapPrivacyStatement.updatePrivacyAgree(activity, true);
+            Map<String,Boolean> map = new HashMap<>();
+            map.put("hasContains",true);
+            map.put("hasShow",true);
+            map.put("hasAgree",true);
+            ConvertUtil.setPrivacyStatement(context,map);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,12 +143,11 @@ public class AMapSearchPlugin implements FlutterPlugin, MethodChannel.MethodCall
         poiSearch.searchPOIAsyn();
     }
 
-    private Map<String, Object> convertPoiResult(PoiResult poiResult) {
-        Map<String, Object> resultMap = new HashMap<>();
+    private List<Map<String, Object>> convertPoiResult(PoiResult poiResult) {
         List<Map<String, Object>> poiList = new ArrayList<>();
 
         for (PoiItem poi : poiResult.getPois()) {
-            Map<String, Object> poiMap = new HashMap<>();
+            Map<String, Object> poiMap = new LinkedHashMap<>();
             poiMap.put("id", poi.getPoiId());
             poiMap.put("name", poi.getTitle());
             poiMap.put("address", poi.getSnippet());
@@ -158,8 +160,7 @@ public class AMapSearchPlugin implements FlutterPlugin, MethodChannel.MethodCall
             poiList.add(poiMap);
         }
 
-        resultMap.put("pois", poiList);
-        return resultMap;
+        return poiList;
     }
 
     @Override

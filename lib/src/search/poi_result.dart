@@ -21,17 +21,26 @@ class PoiResult {
     required this.cityName,
   });
 
-  factory PoiResult.fromMap(Map<String, dynamic> map) {
-    return PoiResult(
-      id: map['id'] ?? '',
-      name: map['name'] ?? '',
-      address: map['address'] ?? '',
-      latitude: map['latitude'] ?? 0.0,
-      longitude: map['longitude'] ?? 0.0,
-      district: map['district'] ?? '',
-      adCode: map['adCode'] ?? '',
-      cityCode: map['cityCode'] ?? '',
-      cityName: map['cityName'] ?? '',
+  static PoiResult fromMap(Map<String, dynamic> map) {
+    T getValue<T>(String key, T defaultValue) {
+      if (map.containsKey(key)) {
+        return map[key];
+      }
+      return defaultValue;
+    }
+
+    PoiResult poiResult = PoiResult(
+      id: getValue('id', ''),
+      name: getValue('name', ''),
+      address: getValue('address', ''),
+      latitude: getValue('latitude', 0.0),
+      longitude: getValue('longitude', 0.0),
+      district: getValue('district', ''),
+      adCode: getValue('adCode', ''),
+      cityCode: getValue('cityCode', ''),
+      cityName: getValue('cityName', ''),
     );
+
+    return poiResult;
   }
 }

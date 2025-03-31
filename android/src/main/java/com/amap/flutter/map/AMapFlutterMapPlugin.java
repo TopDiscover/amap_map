@@ -79,8 +79,9 @@ public class AMapFlutterMapPlugin implements
         );
 
         // 注册搜索插件
-        searchPlugin = new AMapSearchPlugin();
-        searchPlugin.onAttachedToActivity(binding);
+        if ( searchPlugin != null ) {
+            searchPlugin.onAttachedToActivity(binding);
+        }
     }
 
     @Override
