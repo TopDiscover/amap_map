@@ -10,6 +10,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.embedding.engine.plugins.lifecycle.HiddenLifecycleReference;
+import com.amap.flutter.search.AMapSearchPlugin;
 
 /**
  * AmapFlutterMapPlugin
@@ -22,6 +23,7 @@ public class AMapFlutterMapPlugin implements
     private Lifecycle lifecycle;
     private FlutterPluginBinding pluginBinding;
     private AMapLocationPlugin locationPlugin;
+    private AMapSearchPlugin searchPlugin;
 
     public AMapFlutterMapPlugin() {
     }
@@ -43,6 +45,10 @@ public class AMapFlutterMapPlugin implements
         // 注册定位插件
         locationPlugin = new AMapLocationPlugin();
         locationPlugin.onAttachedToEngine(binding);
+
+        // 注册搜索插件
+        searchPlugin = new AMapSearchPlugin();
+        searchPlugin.onAttachedToEngine(binding);
     }
 
     @Override
@@ -50,6 +56,9 @@ public class AMapFlutterMapPlugin implements
         LogUtil.i(CLASS_NAME, "onDetachedFromEngine==>");
         if (locationPlugin != null) {
             locationPlugin.onDetachedFromEngine(binding);
+        }
+        if (searchPlugin != null) {
+            searchPlugin.onDetachedFromEngine(binding);
         }
     }
 
@@ -68,11 +77,18 @@ public class AMapFlutterMapPlugin implements
                         () -> lifecycle
                 )
         );
+
+        // 注册搜索插件
+        searchPlugin = new AMapSearchPlugin();
+        searchPlugin.onAttachedToActivity(binding);
     }
 
     @Override
     public void onDetachedFromActivity() {
         LogUtil.i(CLASS_NAME, "onDetachedFromActivity==>");
+        if (searchPlugin != null) {
+            searchPlugin.onDetachedFromActivity();
+        }
         lifecycle = null;
     }
 

@@ -8,6 +8,7 @@ import 'package:amap_map_example/pages/map/map_my_location.dart';
 import 'package:amap_map_example/pages/map/show_map_page.dart';
 import 'package:amap_map_example/pages/overlays/custom_info_window.dart';
 import 'package:amap_map_example/pages/overlays/marker_config.dart';
+import 'package:amap_map_example/pages/search/search_page.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/location/location_demo.dart';
@@ -21,7 +22,11 @@ class DemoConfiguration {
 }
 
 List<Demo> allDemos() =>
-    mapDemos() + interactiveDemos() + overlayDemos() + locationDemos();
+    mapDemos() +
+    interactiveDemos() +
+    overlayDemos() +
+    locationDemos() +
+    searchDemos();
 
 List<Demo> mapDemos() {
   return <Demo>[
@@ -110,6 +115,19 @@ List<Demo> locationDemos() {
         configurations: <DemoConfiguration>[
           DemoConfiguration(
               buildRoute: (BuildContext context) => LocationDemo())
+        ])
+  ];
+}
+
+List<Demo> searchDemos() {
+  return <Demo>[
+    Demo(
+        title: '搜索',
+        category: DemoCategory.search,
+        subtitle: '搜索',
+        slug: 'search',
+        configurations: <DemoConfiguration>[
+          DemoConfiguration(buildRoute: (BuildContext context) => SearchPage())
         ])
   ];
 }

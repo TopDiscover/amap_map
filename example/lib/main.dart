@@ -85,6 +85,13 @@ class _AMapDemoState extends State<AMapDemo>
                 category: DemoCategory.location,
                 demos: locationDemos(),
               )),
+          AnimatedCategoryItem(
+              startDelayFraction: 0.2,
+              controller: _animationController,
+              child: CategoryListItem(
+                category: DemoCategory.search,
+                demos: searchDemos(),
+              )),
         ],
       ),
     );
@@ -111,6 +118,7 @@ enum DemoCategory {
   interactive,
   overlay,
   location,
+  search,
   extension;
 
   String toDisplayTitle() {
@@ -125,6 +133,8 @@ enum DemoCategory {
         return '定位';
       case extension:
         return '拓展插件';
+      case search:
+        return '搜索';
     }
   }
 }
