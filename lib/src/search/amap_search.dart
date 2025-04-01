@@ -19,14 +19,7 @@ class AmapSearch {
         'pageSize': pageSize,
       });
 
-      List<PoiResult> output = [];
-      if (result is List) {
-        output = result.map((map) {
-          var itemMap = new Map<String, dynamic>.from(map);
-          return PoiResult.fromMap(itemMap);
-        }).toList();
-      }
-      return output;
+      return _toPoiResult(result);
     } catch (e) {
       throw Exception('搜索失败: $e');
     }
@@ -41,7 +34,7 @@ class AmapSearch {
     int pageSize = 20,
   }) async {
     try {
-      final result = await _channel.invokeMethod('searchPOINearby', {
+      dynamic result = await _channel.invokeMethod('searchPOINearby', {
         'latitude': latitude,
         'longitude': longitude,
         'radius': radius,
@@ -49,10 +42,20 @@ class AmapSearch {
         'pageSize': pageSize,
       });
 
-      final List<dynamic> list = result['pois'] ?? [];
-      return list.map((item) => PoiResult.fromMap(item)).toList();
+      return _toPoiResult(result);
     } catch (e) {
       throw Exception('周边搜索失败: $e');
     }
+  }
+
+  _toPoiResult(dynamic result) {
+    List<PoiResult> output = <PoiResult>[];
+    if (result is List) {
+      output = result.map((map) {
+        Map<String, dynamic> itemMap = Map<String, dynamic>.from(map);
+        return PoiResult.fromMap(itemMap);
+      }).toList();
+    }
+    return output;
   }
 }
