@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:amap_map_example/const_config.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,12 @@ class _SearchMapPageState extends State<SearchMapPage> {
   final _locationPlugin = AMapLocationPlugin();
   StreamSubscription<AMapLocationResult>? _locationListener;
   AMapLocationResult? _locationResult;
+
+  final Map<String, Marker> _markers = <String, Marker>{};
+  // 当前坐标
+  LatLng? _currentLatLng;
+  // 当前mark的ID
+  String? markerID;
 
   @override
   void initState() {
@@ -69,6 +76,7 @@ class _SearchMapPageState extends State<SearchMapPage> {
     ) {
       print("定位结果：${result.toString()}");
       _locationResult = result;
+      _currentLatLng = LatLng(result.latitude, result.longitude);
     });
   }
 
@@ -237,11 +245,17 @@ class _SearchMapPageState extends State<SearchMapPage> {
       onLocationChanged: (AMapLocation loc) {
         if (isLocationValid(loc)) {
           print(loc);
-          _mapController?.moveCamera(CameraUpdate.newLatLng(loc.latLng));
+          // _mapController?.moveCamera(CameraUpdate.newLatLng(loc.latLng));
         }
       },
       onMapCreated: (AMapController controller) {
         _mapController = controller;
+      },
+      markers: Set<Marker>.of(_markers.values),
+      onCameraMoveEnd: (CameraPosition position) {
+        print("onCameraMoveEnd===> ${position.toMap()}");
+        _currentLatLng = position.target;
+        _addMarker();
       },
     );
 
@@ -308,5 +322,40 @@ class _SearchMapPageState extends State<SearchMapPage> {
         ),
       ),
     );
+  }
+
+  //添加一个marker
+  void _addMarker() {
+    if (_currentLatLng == null) {
+      return;
+    }
+
+    if (markerID != null) {
+      var marker = _markers[markerID];
+
+      // 更新位置
+      _markers[markerID!] = marker!.copyWith(
+          positionParam:
+              LatLng(_currentLatLng!.latitude, _currentLatLng!.longitude));
+      setState(() {
+        _markers[markerID!] = marker;
+      });
+      return;
+    }
+
+    final LatLng markerPosition =
+        LatLng(_currentLatLng!.latitude, _currentLatLng!.longitude + 2 / 1000);
+    final Marker marker = Marker(
+      position: markerPosition,
+      //使用默认hue的方式设置Marker的图标
+      // icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+    );
+    markerID = marker.id;
+    //调用setState触发AMapWidget的更新，从而完成marker的添加
+    setState(() {
+      _currentLatLng = markerPosition;
+      //将新的marker添加到map里
+      _markers[marker.id] = marker;
+    });
   }
 }
