@@ -232,6 +232,7 @@ class _SearchMapPageState extends State<SearchMapPage> {
         circleFillColor: Colors.lightBlue,
         circleStrokeColor: Colors.blue,
         circleStrokeWidth: 1,
+        myLocationType: MyLocationType.LOCATION_TYPE_LOCATE,
       ),
       onLocationChanged: (AMapLocation loc) {
         if (isLocationValid(loc)) {
@@ -290,6 +291,11 @@ class _SearchMapPageState extends State<SearchMapPage> {
                                 subtitle: Text(poi.address),
                                 onTap: () {
                                   // 处理选中的地点
+                                  _mapController?.moveCamera(
+                                    CameraUpdate.newLatLng(
+                                      LatLng(poi.latitude, poi.longitude),
+                                    ),
+                                  );
                                 },
                               );
                             },

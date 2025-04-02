@@ -125,13 +125,19 @@ class MyLocationStyleOptions {
   ///小蓝点图标
   BitmapDescriptor? icon;
 
+  ///定位类型
+  int? myLocationType;
+
   MyLocationStyleOptions(
     this.enabled, {
     this.circleFillColor,
     this.circleStrokeColor,
     this.circleStrokeWidth,
     this.icon,
-  });
+    this.myLocationType,
+  }) {
+    myLocationType ??= MyLocationType.LOCATION_TYPE_FOLLOW_NO_CENTER;
+  }
 
   MyLocationStyleOptions clone() {
     return MyLocationStyleOptions(
@@ -140,6 +146,7 @@ class MyLocationStyleOptions {
       circleStrokeColor: circleStrokeColor,
       circleStrokeWidth: circleStrokeWidth,
       icon: icon,
+      myLocationType: myLocationType,
     );
   }
 
@@ -153,6 +160,7 @@ class MyLocationStyleOptions {
       circleStrokeColor: json['circleStrokeColor'],
       circleStrokeWidth: json['circleStrokeWidth'],
       icon: json['icon'],
+      myLocationType: json['myLocationType'],
     );
   }
 
@@ -170,6 +178,7 @@ class MyLocationStyleOptions {
     addIfPresent('circleStrokeColor', circleStrokeColor?.argbValue);
     addIfPresent('circleStrokeWidth', circleStrokeWidth);
     addIfPresent('icon', icon?.toMap());
+    addIfPresent('myLocationType', myLocationType);
     return json;
   }
 
@@ -182,7 +191,8 @@ class MyLocationStyleOptions {
     return enabled == typedOther.enabled &&
         circleFillColor == typedOther.circleFillColor &&
         circleStrokeColor == typedOther.circleStrokeColor &&
-        icon == typedOther.icon;
+        icon == typedOther.icon &&
+        myLocationType == typedOther.myLocationType;
   }
 
   @override
@@ -191,12 +201,18 @@ class MyLocationStyleOptions {
         'enabled: $enabled,'
         'circleFillColor: $circleFillColor,'
         'circleStrokeColor: $circleStrokeColor,'
-        'icon: $icon, }';
+        'icon: $icon,'
+        'myLocationType: $myLocationType }';
   }
 
   @override
-  int get hashCode => Object.hashAll(
-      <Object?>[enabled, circleFillColor, circleStrokeColor, icon]);
+  int get hashCode => Object.hashAll(<Object?>[
+        enabled,
+        circleFillColor,
+        circleStrokeColor,
+        icon,
+        myLocationType
+      ]);
 }
 
 ///地图自定义样式

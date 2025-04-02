@@ -339,7 +339,15 @@ public class ConvertUtil {
             myLocationStyle.showMyLocation(toBoolean(enableData));
         }
         //两端差异比较大，Android端设置成跟随但是不移动到中心点模式，与iOS端兼容
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER);
+
+        final Object type = map.get("myLocationType");
+        if ( null != type ){
+            int rType = toInt(type);
+            LogUtil.d(CLASS_NAME, "传入LocationType : "+ rType);
+            myLocationStyle.myLocationType(rType);
+        }else{
+            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER);
+        }
 //        final Object trackingMode = map.get("trackingMode");
 //        if (null != trackingMode) {
 //            int trackingModeIndex = toInt(trackingMode);

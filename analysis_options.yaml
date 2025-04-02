@@ -8,6 +8,7 @@ analyzer:
     missing_required_param: error
     missing_return: error
     invalid_null_aware_operator: error
+    constant_identifier_names: ignore
 
 linter:
   rules:
