@@ -7,10 +7,9 @@ import androidx.annotation.NonNull;
 
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
-import com.amap.api.services.core.PoiItem;
-import com.amap.api.services.poisearch.PoiResult;
-import com.amap.api.services.poisearch.PoiSearch;
-import com.amap.api.services.help.Tip;
+import com.amap.api.services.core.PoiItemV2;
+import com.amap.api.services.poisearch.PoiResultV2;
+import com.amap.api.services.poisearch.PoiSearchV2;
 import com.amap.flutter.map.utils.ConvertUtil;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -27,7 +26,7 @@ import java.util.Map;
 public class AMapSearchPlugin implements FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
     private MethodChannel channel;
     private Activity activity;
-    private PoiSearch poiSearch;
+    private PoiSearchV2 poiSearch;
 
     private Context context;
 
@@ -96,14 +95,14 @@ public class AMapSearchPlugin implements FlutterPlugin, MethodChannel.MethodCall
     }
 
     private void searchByKeyword(String keyword, String city, int page, int pageSize, MethodChannel.Result result) throws AMapException {
-        PoiSearch.Query query = new PoiSearch.Query(keyword, "", city);
+        PoiSearchV2.Query query = new PoiSearchV2.Query(keyword, "", city);
         query.setPageSize(pageSize);
         query.setPageNum(page);
 
-        poiSearch = new PoiSearch(activity, query);
-        poiSearch.setOnPoiSearchListener(new PoiSearch.OnPoiSearchListener() {
+        poiSearch = new PoiSearchV2(activity, query);
+        poiSearch.setOnPoiSearchListener(new PoiSearchV2.OnPoiSearchListener() {
             @Override
-            public void onPoiSearched(PoiResult poiResult, int errorCode) {
+            public void onPoiSearched(PoiResultV2 poiResult, int errorCode) {
                 if (errorCode == 1000) {
                     result.success(convertPoiResult(poiResult));
                 } else {
@@ -112,24 +111,24 @@ public class AMapSearchPlugin implements FlutterPlugin, MethodChannel.MethodCall
             }
 
             @Override
-            public void onPoiItemSearched(PoiItem poiItem, int i) {}
+            public void onPoiItemSearched(PoiItemV2 poiItem, int i) {}
         });
         poiSearch.searchPOIAsyn();
     }
 
     private void searchNearby(double latitude, double longitude, int radius, int page, int pageSize, MethodChannel.Result result) throws AMapException {
-        PoiSearch.Query query = new PoiSearch.Query("", "", "");
+        PoiSearchV2.Query query = new PoiSearchV2.Query("", "", "");
         query.setPageSize(pageSize);
         query.setPageNum(page);
 
-        PoiSearch.SearchBound searchBound = new PoiSearch.SearchBound(
+        PoiSearchV2.SearchBound searchBound = new PoiSearchV2.SearchBound(
                 new LatLonPoint(latitude, longitude), radius);
 
-        poiSearch = new PoiSearch(activity, query);
+        poiSearch = new PoiSearchV2(activity, query);
         poiSearch.setBound(searchBound);
-        poiSearch.setOnPoiSearchListener(new PoiSearch.OnPoiSearchListener() {
+        poiSearch.setOnPoiSearchListener(new PoiSearchV2.OnPoiSearchListener() {
             @Override
-            public void onPoiSearched(PoiResult poiResult, int errorCode) {
+            public void onPoiSearched(PoiResultV2 poiResult, int errorCode) {
                 if (errorCode == 1000) {
                     result.success(convertPoiResult(poiResult));
                 } else {
@@ -138,15 +137,15 @@ public class AMapSearchPlugin implements FlutterPlugin, MethodChannel.MethodCall
             }
 
             @Override
-            public void onPoiItemSearched(PoiItem poiItem, int i) {}
+            public void onPoiItemSearched(PoiItemV2 poiItem, int i) {}
         });
         poiSearch.searchPOIAsyn();
     }
 
-    private List<Map<String, Object>> convertPoiResult(PoiResult poiResult) {
+    private List<Map<String, Object>> convertPoiResult(PoiResultV2 poiResult) {
         List<Map<String, Object>> poiList = new ArrayList<>();
 
-        for (PoiItem poi : poiResult.getPois()) {
+        for (PoiItemV2 poi : poiResult.getPois()) {
             Map<String, Object> poiMap = new LinkedHashMap<>();
             poiMap.put("id", poi.getPoiId());
             poiMap.put("name", poi.getTitle());

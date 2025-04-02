@@ -8,6 +8,7 @@ import 'package:amap_map_example/pages/map/map_my_location.dart';
 import 'package:amap_map_example/pages/map/show_map_page.dart';
 import 'package:amap_map_example/pages/overlays/custom_info_window.dart';
 import 'package:amap_map_example/pages/overlays/marker_config.dart';
+import 'package:amap_map_example/pages/search/search_map_page.dart';
 import 'package:amap_map_example/pages/search/search_page.dart';
 import 'package:flutter/material.dart';
 
@@ -128,6 +129,15 @@ List<Demo> searchDemos() {
         slug: 'search',
         configurations: <DemoConfiguration>[
           DemoConfiguration(buildRoute: (BuildContext context) => SearchPage())
+        ]),
+    Demo(
+        title: "搜索带地图",
+        category: DemoCategory.search,
+        subtitle: "搜索带地图",
+        slug: "search_map",
+        configurations: <DemoConfiguration>[
+          DemoConfiguration(
+              buildRoute: (BuildContext content) => SearchMapPage())
         ])
   ];
 }
