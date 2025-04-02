@@ -244,8 +244,10 @@ class _SearchMapPageState extends State<SearchMapPage> {
       ),
       onLocationChanged: (AMapLocation loc) {
         if (isLocationValid(loc)) {
-          print(loc);
-          // _mapController?.moveCamera(CameraUpdate.newLatLng(loc.latLng));
+          print("当前位置$loc");
+          _currentLatLng = loc.latLng;
+          _addMarker();
+          _mapController?.moveCamera(CameraUpdate.newLatLng(loc.latLng));
         }
       },
       onMapCreated: (AMapController controller) {
@@ -255,6 +257,10 @@ class _SearchMapPageState extends State<SearchMapPage> {
       onCameraMoveEnd: (CameraPosition position) {
         print("onCameraMoveEnd===> ${position.toMap()}");
         _currentLatLng = position.target;
+        _addMarker();
+      },
+      onTap: (LatLng argument){
+        _currentLatLng = argument;
         _addMarker();
       },
     );
@@ -334,11 +340,10 @@ class _SearchMapPageState extends State<SearchMapPage> {
       var marker = _markers[markerID];
 
       // 更新位置
-      _markers[markerID!] = marker!.copyWith(
+      setState(() {
+        _markers[markerID!] = marker!.copyWith(
           positionParam:
               LatLng(_currentLatLng!.latitude, _currentLatLng!.longitude));
-      setState(() {
-        _markers[markerID!] = marker;
       });
       return;
     }

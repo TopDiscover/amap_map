@@ -7,12 +7,18 @@ class AmapSearch {
   // 关键字搜索
   Future<List<PoiResult>> searchByKeyword(
     String keyword, {
+    /// 搜索超市，空为全国
     String city = '',
+    /// poi搜索类型, 如住宅区，学校，医院，楼宇，商场等
+    String type = "",
+    /// 搜索页
     int page = 1,
+    /// 每页大小
     int pageSize = 20,
   }) async {
     try {
       dynamic result = await _channel.invokeMethod('searchPOIByKeyword', {
+        "type" : type,
         'keyword': keyword,
         'city': city,
         'page': page,
@@ -27,10 +33,15 @@ class AmapSearch {
 
   // 周边搜索
   Future<List<PoiResult>> searchNearby({
+    /// 纬度
     required double latitude,
+    /// 经度
     required double longitude,
+    /// 半径 单位：米
     required int radius,
+    /// 搜索页
     int page = 1,
+    /// 每页大小
     int pageSize = 20,
   }) async {
     try {

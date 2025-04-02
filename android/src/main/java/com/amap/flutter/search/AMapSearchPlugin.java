@@ -74,7 +74,8 @@ public class AMapSearchPlugin implements FlutterPlugin, MethodChannel.MethodCall
                     String city = call.argument("city");
                     int page = call.argument("page");
                     int pageSize = call.argument("pageSize");
-                    searchByKeyword(keyword, city, page, pageSize, result);
+                    String type = call.argument("type");
+                    searchByKeyword(keyword, city,type, page, pageSize, result);
                     break;
                 case "searchPOINearby":
                     double latitude = call.argument("latitude");
@@ -94,8 +95,8 @@ public class AMapSearchPlugin implements FlutterPlugin, MethodChannel.MethodCall
         }
     }
 
-    private void searchByKeyword(String keyword, String city, int page, int pageSize, MethodChannel.Result result) throws AMapException {
-        PoiSearchV2.Query query = new PoiSearchV2.Query(keyword, "", city);
+    private void searchByKeyword(String keyword, String city , String type, int page, int pageSize, MethodChannel.Result result) throws AMapException {
+        PoiSearchV2.Query query = new PoiSearchV2.Query(keyword, type, city);
         query.setPageSize(pageSize);
         query.setPageNum(page);
 
