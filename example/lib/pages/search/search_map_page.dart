@@ -232,6 +232,33 @@ class _SearchMapPageState extends State<SearchMapPage> {
     }
   }
 
+  Future<void> _performSearchNearby() async {
+    if (_currentLatLng == null) return;
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final results = await _searchRepository.searchNearby(
+        latitude: _currentLatLng?.latitude ?? 0,
+        longitude: _currentLatLng?.longitude ?? 0,
+        radius: 1000,
+      );
+
+      setState(() {
+        _searchResults = results;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('搜索失败：$e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final AMapWidget amap = AMapWidget(
@@ -242,6 +269,7 @@ class _SearchMapPageState extends State<SearchMapPage> {
         circleStrokeWidth: 1,
         myLocationType: MyLocationType.LOCATION_TYPE_LOCATE,
       ),
+      minMaxZoomPreference: const MinMaxZoomPreference(10, 18),
       onLocationChanged: (AMapLocation loc) {
         if (isLocationValid(loc)) {
           print("当前位置$loc");
@@ -258,10 +286,12 @@ class _SearchMapPageState extends State<SearchMapPage> {
         print("onCameraMoveEnd===> ${position.toMap()}");
         _currentLatLng = position.target;
         _addMarker();
+        _performSearchNearby();
       },
-      onTap: (LatLng argument){
+      onTap: (LatLng argument) {
         _currentLatLng = argument;
         _addMarker();
+        _performSearchNearby();
       },
     );
 
@@ -305,15 +335,21 @@ class _SearchMapPageState extends State<SearchMapPage> {
                         : ListView.builder(
                             itemCount: _searchResults.length,
                             itemBuilder: (context, index) {
-                              final poi = _searchResults[index];
+                              PoiResult poi = _searchResults[index];
                               return ListTile(
                                 title: Text(poi.name),
                                 subtitle: Text(poi.address),
                                 onTap: () {
                                   // 处理选中的地点
                                   _mapController?.moveCamera(
-                                    CameraUpdate.newLatLng(
-                                      LatLng(poi.latitude, poi.longitude),
+                                    CameraUpdate.newCameraPosition(
+                                      CameraPosition(
+                                        target:
+                                            LatLng(poi.latitude, poi.longitude),
+                                        zoom: 16,
+                                        bearing: 30,
+                                        tilt: 30,
+                                      ),
                                     ),
                                   );
                                 },
@@ -342,8 +378,8 @@ class _SearchMapPageState extends State<SearchMapPage> {
       // 更新位置
       setState(() {
         _markers[markerID!] = marker!.copyWith(
-          positionParam:
-              LatLng(_currentLatLng!.latitude, _currentLatLng!.longitude));
+            positionParam:
+                LatLng(_currentLatLng!.latitude, _currentLatLng!.longitude));
       });
       return;
     }
@@ -352,6 +388,7 @@ class _SearchMapPageState extends State<SearchMapPage> {
         LatLng(_currentLatLng!.latitude, _currentLatLng!.longitude + 2 / 1000);
     final Marker marker = Marker(
       position: markerPosition,
+      // draggable: true,
       //使用默认hue的方式设置Marker的图标
       // icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
     );
